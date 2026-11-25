@@ -15,6 +15,24 @@ over successive ten-trading-day cycles.
 
 No real trades are executed.
 
+## Application screenshots
+
+Captured during the initial simulation cycle on November 25, 2026.
+
+### Dashboard overview
+
+![Dashboard](docs/screenshots/momentum-dashboard.png)
+
+### Portfolio allocation and stock rankings
+
+![Rankings](docs/screenshots/momentum-rankings.png)
+
+### Cycle history and watchlist
+
+![History and watchlist](docs/screenshots/momentum-history-watchlist.png)
+
+The experiment was in its first cycle at the time of capture. Performance history will populate as cycles are completed.
+
 ## Features
 
 - Historical market data retrieval using yfinance
