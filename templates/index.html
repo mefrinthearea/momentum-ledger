@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Momentum Ledger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,380;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <!-- ============================================================ -->
+      <!-- MASTHEAD -->
+      <!-- ============================================================ -->
+      <header class="masthead">
+        <div class="masthead-title">
+          <h1>Momentum Ledger</h1>
+          <p class="subtitle">
+            Ten stocks, ranked every ten trading days. A paper portfolio against
+            an equal-weight baseline.
+          </p>
+        </div>
+        <div class="cycle-chip">
+          <div class="cycle-chip-row">
+            <span class="cycle-label">Cycle</span>
+            <span class="cycle-number" id="cycle-number">--</span>
+          </div>
+          <div class="cycle-chip-row">
+            <span class="cycle-date" id="cycle-start-date">--</span>
+            <span class="cycle-status" id="cycle-status">--</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============================================================ -->
+      <!-- STAT STRIP -->
+      <!-- ============================================================ -->
+      <section class="stat-strip" id="stat-strip">
+        <div class="stat">
+          <span class="stat-label">Model balance</span>
+          <span class="stat-value" id="model-balance">--</span>
+          <span class="stat-delta" id="model-delta">--</span>
+        </div>
+
+        <div class="stat">
+          <span class="stat-label">Baseline balance</span>
+          <span class="stat-value" id="baseline-balance">--</span>
+          <span class="stat-delta" id="baseline-delta">--</span>
+        </div>
+
+        <div class="stat">
+          <span class="stat-label">Model edge</span>
+          <span class="stat-value" id="model-edge">--</span>
+          <span class="stat-delta" id="edge-context">--</span>
+        </div>
+
+        <div class="stat stat-progress">
+          <span class="stat-label">Cycle progress</span>
+          <span class="stat-value" id="cycle-progress">--</span>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PORTFOLIO + RANKING -->
+      <!-- ============================================================ -->
+      <section class="panel-grid">
+        <div class="panel" id="portfolio-panel">
+          <div class="panel-header">
+            <h2>Top 5 portfolio</h2>
+            <span class="panel-note">Score-weighted allocation</span>
+          </div>
+          <div id="portfolio-list" class="portfolio-list"></div>
+        </div>
+
+        <div class="panel" id="ranking-panel">
+          <div class="panel-header">
+            <h2>Full ranking</h2>
+            <span class="panel-note" id="ranking-count">--</span>
+          </div>
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-ticker">Ticker</th>
+                <th class="col-num">Price</th>
+                <th class="col-num">10d</th>
+                <th class="col-num">30d</th>
+                <th class="col-num">Vol</th>
+                <th class="col-num">Score</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-body"></tbody>
+          </table>
+          <div class="warming-block">
+            <span class="warming-title">Warming up</span>
+            <div id="warming-up-list" class="warming-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- HISTORY -->
+      <!-- ============================================================ -->
+      <section class="panel" id="history-panel">
+        <div class="panel-header">
+          <h2>Cycle history</h2>
+          <span class="panel-note" id="experiment-summary">--</span>
+        </div>
+        <div class="history-layout">
+          <div class="chart-wrap">
+            <canvas id="performance-chart" width="640" height="240"></canvas>
+            <div class="chart-legend">
+              <span class="legend-item"><i class="dot dot-gold"></i>Model</span>
+              <span class="legend-item"
+                ><i class="dot dot-steel"></i>Baseline</span
+              >
+            </div>
+          </div>
+          <table class="ledger-table history-table">
+            <thead>
+              <tr>
+                <th class="col-rank">Cycle</th>
+                <th>Window</th>
+                <th class="col-num">Model</th>
+                <th class="col-num">Baseline</th>
+                <th class="col-num">Edge</th>
+              </tr>
+            </thead>
+            <tbody id="cycle-history"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- WATCHLIST / UNIVERSE -->
+      <!-- ============================================================ -->
+      <section class="panel" id="universe-panel">
+        <div class="panel-header">
+          <h2>Watchlist</h2>
+          <span class="panel-note">Eligible universe for the next cycle</span>
+        </div>
+        <div id="universe-list" class="universe-list"></div>
+        <form id="add-stock-form" class="add-form" autocomplete="off">
+          <input
+            id="ticker-input"
+            type="text"
+            placeholder="Add a ticker, e.g. TSLA"
+            maxlength="6"
+          />
+          <button type="submit">Add to watchlist</button>
+        </form>
+        <p class="form-note">
+          Edits here stay in this browser tab. main.py's own list is the one
+          that actually runs — update it there, then this reflects it on the
+          next cycle.
+        </p>
+      </section>
+
+      <footer class="footer">
+        <p>
+          Reads <code>current_cycle.json</code> and
+          <code>cycle_history.json</code> straight from main.py. No trades are
+          placed, anywhere, ever.
+        </p>
+      </footer>
+    </div>
+
+    <script src="../static/js/dashboard.js"></script>
+  </body>
+</html>

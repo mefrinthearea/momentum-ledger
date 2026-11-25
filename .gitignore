@@ -1,0 +1,22 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# macOS
+.DS_Store
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+
+# Generated experiment data
+static/data/*.json
+backups/
+
+# Development tools
+.vscode/
+.idea/
+.pytest_cache/
